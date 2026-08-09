@@ -32,7 +32,10 @@ public class ComputerScreenManager : MonoBehaviour
     [SerializeField] private GameObject endingOutstandingView; // NEW - drag Panel_EndingOutstanding here
     [SerializeField] private GameObject endingSatisfactoryView; // NEW - drag Panel_EndingSatisfactory here
     [SerializeField] private GameObject endingUnsatisfactoryView; // NEW - drag Panel_EndingUnsatisfactory here
-
+    
+    [Header("Cause Selection State")]
+    private string pendingCauseID; // holds the player's current pick until Confirm is pressed
+    
     private ComputerScreen currentScreen;
     private CaseData activeCase;
 
@@ -123,4 +126,27 @@ public class ComputerScreenManager : MonoBehaviour
         activeCase = null;
         ShowMainMenu();
     }
+
+    public void OnDeducePressed() // hook to the Deduce button's OnClick in BOTH folder sub-views
+    {
+        UnityEngine.SceneManagement.SceneManager.LoadScene(activeCase.sceneToLoad); // loads whichever case is currently open
+    }
+    
+    public void SelectCause(string causeID) // called when a cause button is clicked - just records the pick
+    {
+        pendingCauseID = causeID; // store it, don't submit yet
+        print("Cause selected (pending): " + causeID);
+    }
+
+    public void ConfirmCauseSelection() // called when Confirm button is clicked
+    {
+        if (string.IsNullOrEmpty(pendingCauseID)) // guard against confirming with nothing picked
+        {
+            print("No cause selected yet - Confirm ignored");
+            return;
+        }
+        SubmitCause(pendingCauseID); // reuses your existing evaluation logic unchanged
+        pendingCauseID = null; // clear for next time
+    }
+    
 }
