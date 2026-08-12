@@ -13,10 +13,8 @@ MonoBehaviour:
   m_Name: wildBoar_Data
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
   caseID: wildBoar
-  caseTitle: Wild Boar Appearance
-  folderThumbnail: {fileID: 0}
   sceneToLoad: wildBoar
-  itemsRequiredToReturn: 0
-  correctCauseID: DistractedDriving
-  overviewText: 
-  newsArticleImages: []
+  correctCauseID: Speeding
+  overviewImage: {fileID: 21300000, guid: 65af2562e05f2b141ad9c9131f5f8b69, type: 3}
+  newsBodyImage: {fileID: 21300000, guid: 1c4b97148acfe6c4c9cbea8e70c4c9f5, type: 3}
+  newsLinkText: https://www.straitstimes.com/singapore/wild-boar-killed-after-being-run-over-by-a-car-on-sle

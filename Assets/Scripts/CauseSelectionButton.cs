@@ -1,35 +1,28 @@
 using UnityEngine; // needed for MonoBehaviour, SerializeField
 using UnityEngine.UI; // needed for Image
-using TMPro; // needed for TMP_Text
 
 public class CauseSelectionButton : MonoBehaviour
 {
     [SerializeField] private CauseOption causeOption; // drag one of your 6 CauseOption assets
-    [SerializeField] private TMP_Text label; // drag this button's own TMP_Text child
-    [SerializeField] private Image background; // drag this button's own Image component
+    [SerializeField] private Image buttonImageDisplay; // drag this button's own Image component (already has your PNG set manually)
 
-    private static CauseSelectionButton currentlySelected; // tracks which button is highlighted across all 6
+    private static CauseSelectionButton currentlySelected;
 
-    void Start()
+    public void OnCauseButtonClicked() // hook this to the Button's OnClick
     {
-        label.text = causeOption.displayLabel; // show the readable cause name
-    }
+        ComputerScreenManager.instance.SelectCause(causeOption.causeID);
 
-    public void OnCauseButtonClicked() // hook this to the Button's OnClick - the ONLY definition of this method
-    {
-        ComputerScreenManager.instance.SelectCause(causeOption.causeID); // records pick, does NOT submit
-
-        if (currentlySelected != null) currentlySelected.SetHighlighted(false); // un-highlight previous pick
-        currentlySelected = this; // this button is now the pick
-        SetHighlighted(true); // highlight it
+        if (currentlySelected != null) currentlySelected.SetHighlighted(false);
+        currentlySelected = this;
+        SetHighlighted(true);
     }
 
     public void SetHighlighted(bool on)
     {
-        background.color = on ? Color.yellow : Color.white; // placeholder colors, swap for real styling later
+        buttonImageDisplay.color = on ? new Color(1f, 0.85f, 0.3f) : Color.white; // tints the already-assigned image
     }
 
-    public static void ClearHighlight() // called by ComputerScreenManager.ShowCauseSelection() on screen open
+    public static void ClearHighlight()
     {
         if (currentlySelected != null)
         {

@@ -16,7 +16,6 @@ public class CaseData : ScriptableObject
     public Sprite overviewImage;
 
     [Header("News Article View")]
-    public Sprite newsTitleImage;
-    public Sprite newsBodyImage;
-    public Sprite newsLinkImage;
+    public Sprite newsBodyImage; 
+    public string newsLinkText;
 }

@@ -1,5 +1,6 @@
 using UnityEngine; // needed for MonoBehaviour, GameObject
 using UnityEngine.UI; // needed for Image
+using TMPro; 
 using UnityEngine.SceneManagement; // needed for LoadScene
 
 public enum ComputerScreen
@@ -35,9 +36,8 @@ public class ComputerScreenManager : MonoBehaviour
     [SerializeField] private Image overviewImageDisplay; // NEW - drag the Image inside folderUnlockedView
 
     [Header("News Article Display")]
-    [SerializeField] private Image newsTitleImageDisplay; // NEW - drag the Image inside panelNewsArticle
-    [SerializeField] private Image newsBodyImageDisplay; // NEW
-    [SerializeField] private Image newsLinkImageDisplay; // NEW
+    [SerializeField] private Image newsBodyImageDisplay; 
+    [SerializeField] private TMP_Text newsLinkTextDisplay;
 
     [Header("Ending Sub-Views")]
     [SerializeField] private GameObject endingOutstandingView;
@@ -166,9 +166,8 @@ public class ComputerScreenManager : MonoBehaviour
         currentScreen = ComputerScreen.NewsArticle;
         SetActivePanel(panelNewsArticle);
 
-        newsTitleImageDisplay.sprite = activeCase.newsTitleImage; // NEW
-        newsBodyImageDisplay.sprite = activeCase.newsBodyImage; // NEW
-        newsLinkImageDisplay.sprite = activeCase.newsLinkImage; // NEW
+        newsBodyImageDisplay.sprite = activeCase.newsBodyImage;
+        newsLinkTextDisplay.text = activeCase.newsLinkText;
     }
 
     public void ReturnToMenu()

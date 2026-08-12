@@ -13,10 +13,8 @@ MonoBehaviour:
   m_Name: Drunk_Data
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
   caseID: Drunk
-  caseTitle: Drink Driving Incident
-  folderThumbnail: {fileID: 0}
   sceneToLoad: Drunk
-  itemsRequiredToReturn: 0
-  correctCauseID: PoorVisibility
-  overviewText: 
-  newsArticleImages: []
+  correctCauseID: DrinkDriving
+  overviewImage: {fileID: 21300000, guid: 2114b45a44d18fa4c8b2e85945389ff3, type: 3}
+  newsBodyImage: {fileID: 21300000, guid: 989e95b817a8f7347b8679f45b78769b, type: 3}
+  newsLinkText: https://www.asiaone.com/singapore/man-crashes-car-toa-payoh-railing-arrested-drink-driving
