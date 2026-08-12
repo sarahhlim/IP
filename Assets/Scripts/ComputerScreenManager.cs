@@ -1,4 +1,5 @@
 using UnityEngine; // needed for MonoBehaviour, GameObject
+using UnityEngine.SceneManagement; // needed for LoadScene
 
 public enum ComputerScreen
 {
@@ -15,6 +16,9 @@ public class ComputerScreenManager : MonoBehaviour
 {
     public static ComputerScreenManager instance;
 
+    [Header("Interaction Reference")]
+    [SerializeField] private ComputerInteraction computerInteraction; // drag ComputerInteractZone here - handles cursor/camera/movement cleanup
+
     [Header("Top-Level Panels")]
     [SerializeField] private GameObject panelMainMenu;
     [SerializeField] private GameObject panelFolderDetail;
@@ -22,29 +26,27 @@ public class ComputerScreenManager : MonoBehaviour
     [SerializeField] private GameObject panelResultSuccess;
     [SerializeField] private GameObject panelResultFail;
     [SerializeField] private GameObject panelNewsArticle;
-    [SerializeField] private GameObject panelEnding; // NEW - drag Panel_Ending here
+    [SerializeField] private GameObject panelEnding;
 
     [Header("Folder Detail Sub-Views")]
-    [SerializeField] private GameObject folderLockedView; // drag FolderLockedView here
-    [SerializeField] private GameObject folderUnlockedView; // drag FolderUnlockedView here
+    [SerializeField] private GameObject folderLockedView;
+    [SerializeField] private GameObject folderUnlockedView;
 
     [Header("Ending Sub-Views")]
-    [SerializeField] private GameObject endingOutstandingView; // NEW - drag Panel_EndingOutstanding here
-    [SerializeField] private GameObject endingSatisfactoryView; // NEW - drag Panel_EndingSatisfactory here
-    [SerializeField] private GameObject endingUnsatisfactoryView; // NEW - drag Panel_EndingUnsatisfactory here
-    
-    [Header("Cause Selection State")]
-    private string pendingCauseID; // holds the player's current pick until Confirm is pressed
-    
+    [SerializeField] private GameObject endingOutstandingView;
+    [SerializeField] private GameObject endingSatisfactoryView;
+    [SerializeField] private GameObject endingUnsatisfactoryView;
+
     private ComputerScreen currentScreen;
     private CaseData activeCase;
+    private string pendingCauseID; // holds the player's current pick until Confirm is pressed
 
     void Awake()
     {
         instance = this; // singleton, UI lives in Office only
     }
 
-    private void SetActivePanel(GameObject target) // turns on the target panel, turns off every other one
+    private void SetActivePanel(GameObject target)
     {
         panelMainMenu.SetActive(target == panelMainMenu);
         panelFolderDetail.SetActive(target == panelFolderDetail);
@@ -63,30 +65,48 @@ public class ComputerScreenManager : MonoBehaviour
 
     public void ShowFolderDetail(CaseData data)
     {
-        activeCase = data; // remember which case is being viewed
+        activeCase = data;
         currentScreen = ComputerScreen.FolderDetail;
         SetActivePanel(panelFolderDetail);
 
-        bool visited = GameManager.instance.IsCaseVisited(data.caseID); // check whether player has played this case before
-        folderLockedView.SetActive(!visited); // "?" view only if never visited
-        folderUnlockedView.SetActive(visited); // overview + news view once visited - Deduct still lives here for replay
+        bool visited = GameManager.instance.IsCaseVisited(data.caseID);
+        folderLockedView.SetActive(!visited);
+        folderUnlockedView.SetActive(visited);
     }
 
     public void ShowCauseSelection()
     {
         currentScreen = ComputerScreen.CauseSelection;
         SetActivePanel(panelCauseSelection);
+        CauseSelectionButton.ClearHighlight(); // reset visual state each time this screen opens
+    }
+
+    public void SelectCause(string causeID) // called when a cause button is clicked - just records the pick
+    {
+        pendingCauseID = causeID;
+        print("Cause selected (pending): " + causeID);
+    }
+
+    public void ConfirmCauseSelection() // called when Confirm button is clicked
+    {
+        if (string.IsNullOrEmpty(pendingCauseID))
+        {
+            print("No cause selected yet - Confirm ignored");
+            return;
+        }
+        SubmitCause(pendingCauseID);
+        pendingCauseID = null;
     }
 
     public void SubmitCause(string chosenCauseID)
     {
-        bool correct = chosenCauseID == activeCase.correctCauseID; // determines which result screen shows
+        bool correct = chosenCauseID == activeCase.correctCauseID;
 
-        GameManager.instance.MarkCaseVisited(activeCase.caseID); // ALWAYS mark visited - progression never blocked by a wrong answer
+        GameManager.instance.MarkCaseVisited(activeCase.caseID); // ALWAYS mark visited - progression never blocked
 
         if (correct)
         {
-            GameManager.instance.MarkCaseSolvedCorrectly(activeCase.caseID); // feeds the ending tally only
+            GameManager.instance.MarkCaseSolvedCorrectly(activeCase.caseID);
             currentScreen = ComputerScreen.ResultSuccess;
             SetActivePanel(panelResultSuccess);
         }
@@ -96,15 +116,15 @@ public class ComputerScreenManager : MonoBehaviour
             SetActivePanel(panelResultFail);
         }
 
-        if (GameManager.instance.IsGameComplete()) // auto-trigger check - runs after every submission
+        if (GameManager.instance.IsGameComplete())
         {
-            TriggerEnding(); // overrides whatever screen would normally show once the 6th case is visited
+            TriggerEnding();
         }
     }
 
     private void TriggerEnding()
     {
-        EndingType result = GameManager.instance.EvaluateEnding(); // ask GameManager for the tally-based outcome
+        EndingType result = GameManager.instance.EvaluateEnding();
         currentScreen = ComputerScreen.Ending;
         SetActivePanel(panelEnding);
 
@@ -127,26 +147,17 @@ public class ComputerScreenManager : MonoBehaviour
         ShowMainMenu();
     }
 
-    public void OnDeducePressed() // hook to the Deduce button's OnClick in BOTH folder sub-views
+    public void OnDeucePressed() // hook to the Deduce button's OnClick in BOTH folder sub-views
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene(activeCase.sceneToLoad); // loads whichever case is currently open
-    }
-    
-    public void SelectCause(string causeID) // called when a cause button is clicked - just records the pick
-    {
-        pendingCauseID = causeID; // store it, don't submit yet
-        print("Cause selected (pending): " + causeID);
-    }
-
-    public void ConfirmCauseSelection() // called when Confirm button is clicked
-    {
-        if (string.IsNullOrEmpty(pendingCauseID)) // guard against confirming with nothing picked
+        if (computerInteraction != null)
         {
-            print("No cause selected yet - Confirm ignored");
-            return;
+            computerInteraction.CloseComputer(); // restores movement, cursor, camera - same as pressing X
         }
-        SubmitCause(pendingCauseID); // reuses your existing evaluation logic unchanged
-        pendingCauseID = null; // clear for next time
+        else
+        {
+            Debug.LogError("ComputerScreenManager: Computer Interaction reference is not assigned - player will stay frozen after scene load");
+        }
+
+        SceneManager.LoadScene(activeCase.sceneToLoad);
     }
-    
 }
