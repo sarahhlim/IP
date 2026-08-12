@@ -7,11 +7,13 @@ public class GameManager : MonoBehaviour
 
     [Header("Ending Thresholds")]
     [SerializeField] private int totalCaseCount = 6;
-    [SerializeField] private int outstandingMinCorrect = 6; // 6/6 correct = Outstanding
-    [SerializeField] private int satisfactoryMinCorrect = 4; // 4 or 5 correct = Satisfactory, below this = Unsatisfactory
+    [SerializeField] private int outstandingMinCorrect = 6;
+    [SerializeField] private int satisfactoryMinCorrect = 4;
 
     private HashSet<string> visitedCases = new HashSet<string>();
     private HashSet<string> correctlySolvedCases = new HashSet<string>();
+
+    public CaseData InProgressCase { get; private set; } // NEW - which case is currently awaiting a cause submission, if any
 
     void Awake()
     {
@@ -56,10 +58,20 @@ public class GameManager : MonoBehaviour
     public EndingType EvaluateEnding()
     {
         int correct = correctlySolvedCases.Count;
-
         if (correct >= outstandingMinCorrect) return EndingType.Outstanding;
         if (correct >= satisfactoryMinCorrect) return EndingType.Satisfactory;
         return EndingType.Unsatisfactory;
+    }
+
+    public void SetInProgressCase(CaseData data) // NEW - called right before Deduce loads a case scene
+    {
+        InProgressCase = data;
+        print("In-progress case set: " + (data != null ? data.caseID : "null"));
+    }
+
+    public void ClearInProgressCase() // NEW - called once a cause has been submitted for this case
+    {
+        InProgressCase = null;
     }
 }
 

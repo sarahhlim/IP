@@ -1,4 +1,5 @@
 using UnityEngine; // needed for MonoBehaviour, GameObject
+using UnityEngine.UI; // needed for Image
 using UnityEngine.SceneManagement; // needed for LoadScene
 
 public enum ComputerScreen
@@ -17,7 +18,7 @@ public class ComputerScreenManager : MonoBehaviour
     public static ComputerScreenManager instance;
 
     [Header("Interaction Reference")]
-    [SerializeField] private ComputerInteraction computerInteraction; // drag ComputerInteractZone here - handles cursor/camera/movement cleanup
+    [SerializeField] private ComputerInteraction computerInteraction;
 
     [Header("Top-Level Panels")]
     [SerializeField] private GameObject panelMainMenu;
@@ -31,6 +32,12 @@ public class ComputerScreenManager : MonoBehaviour
     [Header("Folder Detail Sub-Views")]
     [SerializeField] private GameObject folderLockedView;
     [SerializeField] private GameObject folderUnlockedView;
+    [SerializeField] private Image overviewImageDisplay; // NEW - drag the Image inside folderUnlockedView
+
+    [Header("News Article Display")]
+    [SerializeField] private Image newsTitleImageDisplay; // NEW - drag the Image inside panelNewsArticle
+    [SerializeField] private Image newsBodyImageDisplay; // NEW
+    [SerializeField] private Image newsLinkImageDisplay; // NEW
 
     [Header("Ending Sub-Views")]
     [SerializeField] private GameObject endingOutstandingView;
@@ -39,11 +46,11 @@ public class ComputerScreenManager : MonoBehaviour
 
     private ComputerScreen currentScreen;
     private CaseData activeCase;
-    private string pendingCauseID; // holds the player's current pick until Confirm is pressed
+    private string pendingCauseID;
 
     void Awake()
     {
-        instance = this; // singleton, UI lives in Office only
+        instance = this;
     }
 
     private void SetActivePanel(GameObject target)
@@ -55,6 +62,19 @@ public class ComputerScreenManager : MonoBehaviour
         panelResultFail.SetActive(target == panelResultFail);
         panelNewsArticle.SetActive(target == panelNewsArticle);
         panelEnding.SetActive(target == panelEnding);
+    }
+
+    public void OpenDefaultScreen()
+    {
+        if (GameManager.instance.InProgressCase != null)
+        {
+            activeCase = GameManager.instance.InProgressCase;
+            ShowCauseSelection();
+        }
+        else
+        {
+            ShowMainMenu();
+        }
     }
 
     public void ShowMainMenu()
@@ -72,22 +92,27 @@ public class ComputerScreenManager : MonoBehaviour
         bool visited = GameManager.instance.IsCaseVisited(data.caseID);
         folderLockedView.SetActive(!visited);
         folderUnlockedView.SetActive(visited);
+
+        if (visited) // NEW - only populate when actually shown
+        {
+            overviewImageDisplay.sprite = data.overviewImage;
+        }
     }
 
     public void ShowCauseSelection()
     {
         currentScreen = ComputerScreen.CauseSelection;
         SetActivePanel(panelCauseSelection);
-        CauseSelectionButton.ClearHighlight(); // reset visual state each time this screen opens
+        CauseSelectionButton.ClearHighlight();
     }
 
-    public void SelectCause(string causeID) // called when a cause button is clicked - just records the pick
+    public void SelectCause(string causeID)
     {
         pendingCauseID = causeID;
         print("Cause selected (pending): " + causeID);
     }
 
-    public void ConfirmCauseSelection() // called when Confirm button is clicked
+    public void ConfirmCauseSelection()
     {
         if (string.IsNullOrEmpty(pendingCauseID))
         {
@@ -102,7 +127,8 @@ public class ComputerScreenManager : MonoBehaviour
     {
         bool correct = chosenCauseID == activeCase.correctCauseID;
 
-        GameManager.instance.MarkCaseVisited(activeCase.caseID); // ALWAYS mark visited - progression never blocked
+        GameManager.instance.MarkCaseVisited(activeCase.caseID);
+        GameManager.instance.ClearInProgressCase();
 
         if (correct)
         {
@@ -139,6 +165,10 @@ public class ComputerScreenManager : MonoBehaviour
     {
         currentScreen = ComputerScreen.NewsArticle;
         SetActivePanel(panelNewsArticle);
+
+        newsTitleImageDisplay.sprite = activeCase.newsTitleImage; // NEW
+        newsBodyImageDisplay.sprite = activeCase.newsBodyImage; // NEW
+        newsLinkImageDisplay.sprite = activeCase.newsLinkImage; // NEW
     }
 
     public void ReturnToMenu()
@@ -147,15 +177,17 @@ public class ComputerScreenManager : MonoBehaviour
         ShowMainMenu();
     }
 
-    public void OnDeucePressed() // hook to the Deduce button's OnClick in BOTH folder sub-views
+    public void OnDeucePressed()
     {
+        GameManager.instance.SetInProgressCase(activeCase);
+
         if (computerInteraction != null)
         {
-            computerInteraction.CloseComputer(); // restores movement, cursor, camera - same as pressing X
+            computerInteraction.CloseComputer();
         }
         else
         {
-            Debug.LogError("ComputerScreenManager: Computer Interaction reference is not assigned - player will stay frozen after scene load");
+            Debug.LogError("ComputerScreenManager: Computer Interaction reference is not assigned");
         }
 
         SceneManager.LoadScene(activeCase.sceneToLoad);
