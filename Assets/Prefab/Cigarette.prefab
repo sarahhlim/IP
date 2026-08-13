@@ -183,6 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CollectibleItem
   itemID: cigaretteID
+  pickupSound: {fileID: 8300000, guid: ce199104f20088e4493732520c058476, type: 3}
 --- !u!1 &8205782082095669542
 GameObject:
   m_ObjectHideFlags: 0
