@@ -3,23 +3,12 @@ using UnityEngine.UI; // needed for Image
 using TMPro; // needed for TMP_Text
 using UnityEngine.SceneManagement; // needed for LoadScene
 
-public enum ComputerScreen
-{
-    MainMenu,
-    FolderDetail,
-    CauseSelection,
-    ResultSuccess,
-    ResultFail,
-    NewsArticle,
-    Ending
-}
-
 public class ComputerScreenManager : MonoBehaviour
 {
     public static ComputerScreenManager instance;
 
     [Header("Interaction Reference")]
-    [SerializeField] private ComputerInteraction computerInteraction; // drag ComputerInteractZone here - handles cursor/camera/movement cleanup
+    [SerializeField] private ComputerInteraction computerInteraction; // drag ComputerInteractZone here
 
     [Header("Top-Level Panels")]
     [SerializeField] private GameObject panelMainMenu;
@@ -33,28 +22,35 @@ public class ComputerScreenManager : MonoBehaviour
     [Header("Folder Detail Sub-Views")]
     [SerializeField] private GameObject folderLockedView;
     [SerializeField] private GameObject folderUnlockedView;
-    [SerializeField] private Image overviewImageDisplay; // drag the Image inside folderUnlockedView
+    [SerializeField] private Image overviewImageDisplay;
 
     [Header("News Article Display")]
-    [SerializeField] private Image newsBodyImageDisplay; // drag the Image inside panelNewsArticle
-    [SerializeField] private TMP_Text newsLinkTextDisplay; // drag the TMP_Text inside panelNewsArticle
+    [SerializeField] private Image newsBodyImageDisplay;
+    [SerializeField] private TMP_Text newsLinkTextDisplay;
 
     [Header("Result Item Display")]
     [SerializeField] private Image[] resultSuccessItemSlots; // 3 slots on Panel_ResultSuccess
     [SerializeField] private Image[] resultFailItemSlots; // 3 slots on Panel_ResultFail
+
+    [Header("Result Success Cause Reveal")]
+    [SerializeField] private Image successChosenCauseDisplay;
+    [SerializeField] private Image successCorrectCauseDisplay;
+
+    [Header("Result Fail Cause Reveal")]
+    [SerializeField] private Image failChosenCauseDisplay;
+    [SerializeField] private Image failCorrectCauseDisplay;
 
     [Header("Ending Sub-Views")]
     [SerializeField] private GameObject endingOutstandingView;
     [SerializeField] private GameObject endingSatisfactoryView;
     [SerializeField] private GameObject endingUnsatisfactoryView;
 
-    private ComputerScreen currentScreen;
     private CaseData activeCase;
-    private string pendingCauseID;
+    private CauseOption pendingCause;
 
     void Awake()
     {
-        instance = this; // singleton, UI lives in Office only
+        instance = this;
     }
 
     private void SetActivePanel(GameObject target)
@@ -68,29 +64,27 @@ public class ComputerScreenManager : MonoBehaviour
         panelEnding.SetActive(target == panelEnding);
     }
 
-    public void OpenDefaultScreen() // called by ComputerInteraction.OpenComputer() instead of ShowMainMenu() directly
+    public void OpenDefaultScreen()
     {
-        if (GameManager.instance.InProgressCase != null) // a case is mid-playthrough, awaiting cause submission
+        if (GameManager.instance.InProgressCase != null)
         {
-            activeCase = GameManager.instance.InProgressCase; // restore which case this is
-            ShowCauseSelection(); // skip straight past Main Menu
+            activeCase = GameManager.instance.InProgressCase;
+            ShowCauseSelection();
         }
         else
         {
-            ShowMainMenu(); // normal default, no case in progress
+            ShowMainMenu();
         }
     }
 
     public void ShowMainMenu()
     {
-        currentScreen = ComputerScreen.MainMenu;
         SetActivePanel(panelMainMenu);
     }
 
     public void ShowFolderDetail(CaseData data)
     {
         activeCase = data;
-        currentScreen = ComputerScreen.FolderDetail;
         SetActivePanel(panelFolderDetail);
 
         bool visited = GameManager.instance.IsCaseVisited(data.caseID);
@@ -105,69 +99,75 @@ public class ComputerScreenManager : MonoBehaviour
 
     public void ShowCauseSelection()
     {
-        currentScreen = ComputerScreen.CauseSelection;
         SetActivePanel(panelCauseSelection);
-        CauseSelectionButton.ClearHighlight(); // reset visual state each time this screen opens
+        CauseSelectionButton.ClearHighlight();
     }
 
-    public void SelectCause(string causeID) // called when a cause button is clicked - just records the pick
+    public void SelectCause(CauseOption cause)
     {
-        pendingCauseID = causeID;
-        print("Cause selected (pending): " + causeID);
+        pendingCause = cause;
+        print("Cause selected (pending): " + cause.causeID);
     }
 
-    public void ConfirmCauseSelection() // called when Confirm button is clicked
+    public void ConfirmCauseSelection()
     {
-        if (string.IsNullOrEmpty(pendingCauseID))
+        if (pendingCause == null)
         {
             print("No cause selected yet - Confirm ignored");
             return;
         }
-        SubmitCause(pendingCauseID);
-        pendingCauseID = null;
+        SubmitCause(pendingCause);
+        pendingCause = null;
     }
 
-    public void SubmitCause(string chosenCauseID)
+    public void SubmitCause(CauseOption chosenCause)
+{
+    print("Chosen revealIcon: " + (chosenCause.revealIcon != null)); // TEMPORARY
+    print("Correct revealIcon: " + (activeCase.correctCause.revealIcon != null)); // TEMPORARY
+    print("Success Chosen Display assigned: " + (successChosenCauseDisplay != null)); // TEMPORARY
+    print("Success Correct Display assigned: " + (successCorrectCauseDisplay != null)); // TEMPORARY
+
+    bool correct = chosenCause.causeID == activeCase.correctCause.causeID;
+
+    GameManager.instance.MarkCaseVisited(activeCase.caseID);
+    GameManager.instance.ClearInProgressCase();
+
+    if (correct)
     {
-        bool correct = chosenCauseID == activeCase.correctCauseID;
-
-        GameManager.instance.MarkCaseVisited(activeCase.caseID); // ALWAYS mark visited - progression never blocked
-        GameManager.instance.ClearInProgressCase(); // case is now resolved, no longer "in progress"
-
-        if (correct)
-        {
-            GameManager.instance.MarkCaseSolvedCorrectly(activeCase.caseID);
-            currentScreen = ComputerScreen.ResultSuccess;
-            SetActivePanel(panelResultSuccess);
-            UpdateResultItemDisplay(resultSuccessItemSlots);
-        }
-        else
-        {
-            currentScreen = ComputerScreen.ResultFail;
-            SetActivePanel(panelResultFail);
-            UpdateResultItemDisplay(resultFailItemSlots);
-        }
-
-        if (GameManager.instance.IsGameComplete())
-        {
-            TriggerEnding();
-        }
+        GameManager.instance.MarkCaseSolvedCorrectly(activeCase.caseID);
+        SetActivePanel(panelResultSuccess);
+        UpdateResultItemDisplay(resultSuccessItemSlots);
+        successChosenCauseDisplay.sprite = chosenCause.revealIcon;
+        successCorrectCauseDisplay.sprite = activeCase.correctCause.revealIcon;
+    }
+    else
+    {
+        SetActivePanel(panelResultFail);
+        UpdateResultItemDisplay(resultFailItemSlots);
+        failChosenCauseDisplay.sprite = chosenCause.revealIcon;
+        failCorrectCauseDisplay.sprite = activeCase.correctCause.revealIcon;
     }
 
-    private void UpdateResultItemDisplay(Image[] slots) // fills the 3 item slots based on what was actually collected
+    if (GameManager.instance.IsGameComplete())
+    {
+        TriggerEnding();
+    }
+}
+
+    private void UpdateResultItemDisplay(Image[] slots)
     {
         for (int i = 0; i < activeCase.correctItems.Length && i < slots.Length; i++)
         {
             bool collected = GameManager.instance.HasCollectedItem(activeCase.correctItems[i].itemID);
+            slots[i].enabled = true; // always visible now, regardless of collected state
             slots[i].sprite = activeCase.correctItems[i].icon;
-            slots[i].color = collected ? Color.white : new Color(1f, 1f, 1f, 0.15f); // dim if not collected
+            slots[i].color = collected ? Color.white : new Color(1f, 1f, 1f, 0.15f); // full brightness if collected, faint if not
         }
     }
 
     private void TriggerEnding()
     {
         EndingType result = GameManager.instance.EvaluateEnding();
-        currentScreen = ComputerScreen.Ending;
         SetActivePanel(panelEnding);
 
         endingOutstandingView.SetActive(result == EndingType.Outstanding);
@@ -179,7 +179,6 @@ public class ComputerScreenManager : MonoBehaviour
 
     public void ShowNewsArticle()
     {
-        currentScreen = ComputerScreen.NewsArticle;
         SetActivePanel(panelNewsArticle);
 
         newsBodyImageDisplay.sprite = activeCase.newsBodyImage;
@@ -192,24 +191,24 @@ public class ComputerScreenManager : MonoBehaviour
         ShowMainMenu();
     }
 
-    public void OnDeucePressed() // hook to the Deduce button's OnClick in BOTH folder sub-views
+    public void OnDeucePressed()
     {
-        GameManager.instance.SetInProgressCase(activeCase); // remember this case is now in progress before leaving
-        GameManager.instance.ResetCollectedItems(); // clear leftover items from any previous attempt
+        GameManager.instance.SetInProgressCase(activeCase);
+        GameManager.instance.ResetCollectedItems();
 
         if (computerInteraction != null)
         {
-            computerInteraction.CloseComputer(); // restores movement, cursor, camera - same as pressing X
+            computerInteraction.CloseComputer();
         }
         else
         {
-            Debug.LogError("ComputerScreenManager: Computer Interaction reference is not assigned - player will stay frozen after scene load");
+            Debug.LogError("ComputerScreenManager: Computer Interaction reference is not assigned");
         }
 
         SceneManager.LoadScene(activeCase.sceneToLoad);
     }
 
-    public void OnEndingContinuePressed() // hook to Continue button on the ending panel
+    public void OnEndingContinuePressed()
     {
         if (computerInteraction != null)
         {
@@ -217,14 +216,14 @@ public class ComputerScreenManager : MonoBehaviour
         }
     }
 
-    public void OnExitGamePressed() // hook to Exit Game button on the ending panel
+    public void OnExitGamePressed()
     {
         print("Exit Game pressed");
 
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false; // stops Play mode when testing inside the Editor
+        UnityEditor.EditorApplication.isPlaying = false;
 #else
-        Application.Quit(); // closes the actual built application
+        Application.Quit();
 #endif
     }
 }

@@ -6,14 +6,15 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     [Header("Ending Thresholds")]
-    [SerializeField] private int totalCaseCount = 6;
-    [SerializeField] private int outstandingMinCorrect = 6;
-    [SerializeField] private int satisfactoryMinCorrect = 4;
+    [SerializeField] private int totalCaseCount = 3;
+    [SerializeField] private int outstandingMinCorrect = 3;
+    [SerializeField] private int satisfactoryMinCorrect = 2;
 
     private HashSet<string> visitedCases = new HashSet<string>();
     private HashSet<string> correctlySolvedCases = new HashSet<string>();
+    private HashSet<string> collectedItemIDs = new HashSet<string>(); // resets each time a new case is started
 
-    public CaseData InProgressCase { get; private set; } // NEW - which case is currently awaiting a cause submission, if any
+    public CaseData InProgressCase { get; private set; } // which case is currently awaiting a cause submission, if any
 
     void Awake()
     {
@@ -63,18 +64,16 @@ public class GameManager : MonoBehaviour
         return EndingType.Unsatisfactory;
     }
 
-    public void SetInProgressCase(CaseData data) // NEW - called right before Deduce loads a case scene
+    public void SetInProgressCase(CaseData data)
     {
         InProgressCase = data;
         print("In-progress case set: " + (data != null ? data.caseID : "null"));
     }
 
-    public void ClearInProgressCase() // NEW - called once a cause has been submitted for this case
+    public void ClearInProgressCase()
     {
         InProgressCase = null;
     }
-
-    private HashSet<string> collectedItemIDs = new HashSet<string>(); // resets each time a new case is started
 
     public void CollectItem(string itemID)
     {
@@ -87,7 +86,7 @@ public class GameManager : MonoBehaviour
         return collectedItemIDs.Contains(itemID);
     }
 
-    public void ResetCollectedItems() // call this right before loading into a case scene
+    public void ResetCollectedItems() // call before loading into a case scene
     {
         collectedItemIDs.Clear();
     }

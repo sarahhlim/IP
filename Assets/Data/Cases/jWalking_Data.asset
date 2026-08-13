@@ -14,7 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CaseData
   caseID: jWalking
   sceneToLoad: jWalking
-  correctCauseID: jWalking
+  correctCause: {fileID: 11400000, guid: 13526b480a22dbf429b7362f069ec4aa, type: 2}
   overviewImage: {fileID: 21300000, guid: 1b19db7f83512d646a18a24c1870bb15, type: 3}
   newsBodyImage: {fileID: 21300000, guid: 16530255c98ed2c4a91a9401f9a4e6e4, type: 3}
   newsLinkText: https://www.channelnewsasia.com/singapore/fatal-accident-jaywalking-queensway-jalan-bukit-merah-teenage-boy-died-jail-driving-ban-4439621
+  correctItems:
+  - itemID: headphoneID
+    icon: {fileID: 21300000, guid: f2ce608bbb622e54bada8beb1820facc, type: 3}
+  - itemID: phoneID
+    icon: {fileID: 21300000, guid: c9889cad3ef68d94086bb34e49498991, type: 3}
+  - itemID: jacketID
+    icon: {fileID: 21300000, guid: 50cee95ad0a71934dac9b693c9964b8e, type: 3}

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: jWalking_Data
   m_EditorClassIdentifier: Assembly-CSharp::CauseOption
   causeID: jWalking
-  displayLabel: jWalking
+  revealIcon: {fileID: 21300000, guid: b9563b8cc95ed284abac90bf297db1b4, type: 3}
