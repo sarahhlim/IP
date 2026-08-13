@@ -9,10 +9,13 @@ public class CrashManager : MonoBehaviour
     [Header("Aftermath Objects")]
     public GameObject deadVictim;
     public GameObject ghostVictim;
-    public GameObject fireParticleSystem;
+    public ParticleSystem fireParticleSystem;
+
+    [Header("Items To Reveal")]
+    public GameObject[] itemsToSpawn; // Array for your 4 items (and any false items)
 
     [Header("Audio")]
-    public AudioClip crashSoundEffect; // Using AudioClip prevents the sound from cutting off!
+    public AudioClip crashSoundEffect;
 
     private bool hasCrashed = false;
 
@@ -29,32 +32,37 @@ public class CrashManager : MonoBehaviour
 
     private void TriggerCrashEvent()
     {
-        // 1. Play audio at the crash location (won't stop when object disappears)
+        // 1. Play Audio
         if (crashSoundEffect != null)
         {
             AudioSource.PlayClipAtPoint(crashSoundEffect, transform.position);
         }
-        else
-        {
-            Debug.LogWarning("⚠️ Missing: Crash Sound Effect is not assigned in Inspector!");
-        }
 
-        // 2. Handle Car swapping
+        // 2. Hide moving car & show crashed car
         if (movingCar != null) movingCar.SetActive(false);
-
         if (crashedCar != null) crashedCar.SetActive(true);
 
-        // 3. Enable Aftermath Objects
-        if (fireParticleSystem != null) fireParticleSystem.SetActive(true);
-        else Debug.LogWarning("⚠️ Missing: Fire Particle System is not assigned in Inspector!");
+        // 3. Play Fire Particles
+        if (fireParticleSystem != null)
+        {
+            fireParticleSystem.gameObject.SetActive(true);
+            fireParticleSystem.Play();
+        }
 
+        // 4. Enable Victims
         if (deadVictim != null) deadVictim.SetActive(true);
-        else Debug.LogWarning("⚠️ Missing: Dead Victim is not assigned in Inspector!");
-
         if (ghostVictim != null) ghostVictim.SetActive(true);
-        else Debug.LogWarning("⚠️ Missing: Ghost Victim is not assigned in Inspector!");
 
-        // 4. Disable standing victim
+        // 5. Reveal Items on the road
+        foreach (GameObject item in itemsToSpawn)
+        {
+            if (item != null)
+            {
+                item.SetActive(true);
+            }
+        }
+
+        // 6. Hide standing victim
         gameObject.SetActive(false);
     }
 }
