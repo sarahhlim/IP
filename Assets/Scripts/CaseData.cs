@@ -1,10 +1,17 @@
-using UnityEngine; // needed for ScriptableObject, Sprite
+using UnityEngine;
+
+[System.Serializable]
+public class CorrectItem
+{
+    public string itemID;
+    public Sprite icon;
+}
 
 [CreateAssetMenu(fileName = "NewCase", menuName = "Cases/Case Data")]
 public class CaseData : ScriptableObject
 {
     [Header("Identity")]
-    public string caseID; // unique id, e.g. "eScooter" - used for tracking logic only, never shown to player
+    public string caseID;
 
     [Header("Scene Link")]
     public string sceneToLoad;
@@ -16,6 +23,9 @@ public class CaseData : ScriptableObject
     public Sprite overviewImage;
 
     [Header("News Article View")]
-    public Sprite newsBodyImage; 
+    public Sprite newsBodyImage;
     public string newsLinkText;
+
+    [Header("Correct Clue Items")]
+    public CorrectItem[] correctItems; // exactly 3, each tied to one collectible in this case's scene
 }

@@ -9,23 +9,14 @@ EditorBuildSettings:
     path: Assets/Scenes/Office.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/Scenes/eScooter.unity
-    guid: 82405620fd5ce434aa77787aa7bde227
-  - enabled: 1
     path: Assets/Scenes/Bus.unity
     guid: 7e207e97dccf69948a091004546fd3f7
-  - enabled: 1
-    path: Assets/Scenes/Drunk.unity
-    guid: 88ea2ff44cd60b44e8d76156e392f1ea
   - enabled: 1
     path: Assets/Scenes/jWalking.unity
     guid: da7eab6e2f9b51048a55efb2609d0b05
   - enabled: 1
     path: Assets/Scenes/PMD.unity
     guid: a924288cb61413e42b767eda25103ea6
-  - enabled: 1
-    path: Assets/Scenes/wildBoar.unity
-    guid: c62061fcad8d7184ca423facbb5ba5e3
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

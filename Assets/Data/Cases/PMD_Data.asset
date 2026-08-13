@@ -15,6 +15,6 @@ MonoBehaviour:
   caseID: PMD
   sceneToLoad: PMD
   correctCauseID: IntoxicatedDriving
-  overviewImage: {fileID: 21300000, guid: 3535a15f1551fe44e8dd3877c4d2d30a, type: 3}
+  overviewImage: {fileID: 21300000, guid: df8cb578e51d2304f899344a91659432, type: 3}
   newsBodyImage: {fileID: 21300000, guid: 874864fd771fd4241856cccc55007bb1, type: 3}
   newsLinkText: https://www.asiaone.com/singapore/pmd-rider-die-hit-crash-lorry-traffic-accident-toa-payoh

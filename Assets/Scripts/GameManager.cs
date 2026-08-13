@@ -73,6 +73,24 @@ public class GameManager : MonoBehaviour
     {
         InProgressCase = null;
     }
+
+    private HashSet<string> collectedItemIDs = new HashSet<string>(); // resets each time a new case is started
+
+    public void CollectItem(string itemID)
+    {
+        collectedItemIDs.Add(itemID);
+        print("Item collected: " + itemID);
+    }
+
+    public bool HasCollectedItem(string itemID)
+    {
+        return collectedItemIDs.Contains(itemID);
+    }
+
+    public void ResetCollectedItems() // call this right before loading into a case scene
+    {
+        collectedItemIDs.Clear();
+    }
 }
 
 public enum EndingType
