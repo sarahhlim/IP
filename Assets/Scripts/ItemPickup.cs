@@ -1,10 +1,11 @@
 using UnityEngine;
+using UnityEngine.InputSystem; // Required for the new Input System
 
 public class ItemPickup : MonoBehaviour
 {
     [Header("Item Info")]
     public string itemName = "Phone";
-    public bool isRequiredItem = true; // Set to FALSE for decoy/false items!
+    public bool isRequiredItem = true; // Set to FALSE for decoy items
 
     [Header("Audio")]
     public AudioClip pickupSound;
@@ -13,7 +14,6 @@ public class ItemPickup : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // Checks if the player entered the item's trigger area
         if (other.CompareTag("Player"))
         {
             isPlayerInRange = true;
@@ -30,8 +30,8 @@ public class ItemPickup : MonoBehaviour
 
     private void Update()
     {
-        // If player is close enough and presses 'E'
-        if (isPlayerInRange && Input.GetKeyDown(KeyCode.E))
+        // New Input System check for pressing the 'E' key
+        if (isPlayerInRange && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
         {
             CollectItem();
         }
@@ -39,16 +39,13 @@ public class ItemPickup : MonoBehaviour
 
     private void CollectItem()
     {
-        // Play pickup audio clip
         if (pickupSound != null)
         {
             AudioSource.PlayClipAtPoint(pickupSound, transform.position);
         }
 
-        // Send collection update to manager if present
         ItemCollectorManager.Instance?.ItemCollected(itemName, isRequiredItem);
 
-        // Hide/Remove the item from the ground
         gameObject.SetActive(false);
     }
 }
