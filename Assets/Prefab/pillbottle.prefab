@@ -190,6 +190,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7123967016306128998}
   - component: {fileID: 10832833747461079}
+  - component: {fileID: 9095740284033515907}
   m_Layer: 0
   m_Name: pillbottle
   m_TagString: Untagged
@@ -228,3 +229,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CollectibleItem
   itemID: medicineID
   pickupSound: {fileID: 8300000, guid: ce199104f20088e4493732520c058476, type: 3}
+--- !u!65 &9095740284033515907
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7608474149106148060}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
