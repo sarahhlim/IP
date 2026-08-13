@@ -138,6 +138,7 @@ GameObject:
   - component: {fileID: 5587540693329777676}
   - component: {fileID: 8801499584350722985}
   - component: {fileID: 6755894722690674531}
+  - component: {fileID: 7245942430753398689}
   m_Layer: 0
   m_Name: busboard
   m_TagString: Untagged
@@ -219,3 +220,25 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &7245942430753398689
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5098424442397544118}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -3879214230253373848, guid: e2d22eefc4e26b7408c8ee9610831520, type: 3}

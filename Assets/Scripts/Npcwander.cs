@@ -15,20 +15,41 @@ public class NPCWander : MonoBehaviour
     private Bounds pavementBounds;
     private float waitTimer;
     private bool waiting;
+    private bool boundsValid;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
 
-        // Get the plane's world-space bounds (works for a standard Unity Plane or a scaled Quad)
-        Renderer rend = pavementPlane.GetComponent<Renderer>();
-        pavementBounds = rend.bounds;
+        if (pavementPlane == null)
+        {
+            Debug.LogError($"[{name}] Pavement Plane not assigned!", this);
+            return;
+        }
 
+        // Search the plane AND all its children for renderers,
+        // then combine all their bounds into one.
+        Renderer[] renderers = pavementPlane.GetComponentsInChildren<Renderer>();
+        if (renderers.Length == 0)
+        {
+            Debug.LogError($"[{name}] No Renderer found on '{pavementPlane.name}' or its children.", this);
+            return;
+        }
+
+        pavementBounds = renderers[0].bounds;
+        for (int i = 1; i < renderers.Length; i++)
+        {
+            pavementBounds.Encapsulate(renderers[i].bounds);
+        }
+
+        boundsValid = true;
         PickNewDestination();
     }
 
     void Update()
     {
+        if (!boundsValid) return;
+
         if (waiting)
         {
             waitTimer -= Time.deltaTime;
@@ -49,7 +70,7 @@ public class NPCWander : MonoBehaviour
 
     void PickNewDestination()
     {
-        // Pick a random point within the plane's XZ bounds
+        // Pick a random point within the combined bounds' XZ area
         float x = Random.Range(pavementBounds.min.x, pavementBounds.max.x);
         float z = Random.Range(pavementBounds.min.z, pavementBounds.max.z);
         Vector3 randomPoint = new Vector3(x, pavementBounds.center.y, z);
