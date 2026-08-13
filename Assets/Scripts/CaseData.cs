@@ -1,7 +1,7 @@
-using UnityEngine;
+using UnityEngine; // needed for ScriptableObject, Sprite
 
 [System.Serializable]
-public class CorrectItem
+public class CorrectItem // pairs an item ID with the icon shown when collected
 {
     public string itemID;
     public Sprite icon;
@@ -11,13 +11,13 @@ public class CorrectItem
 public class CaseData : ScriptableObject
 {
     [Header("Identity")]
-    public string caseID;
+    public string caseID; // unique id, e.g. "eScooter" - used for tracking logic only, never shown to player
 
     [Header("Scene Link")]
-    public string sceneToLoad;
+    public string sceneToLoad; // must match scene name in Build Profiles exactly
 
     [Header("Cause Of Incident")]
-    public string correctCauseID;
+    public CauseOption correctCause; // direct reference, not a string ID
 
     [Header("Folder Unlocked View")]
     public Sprite overviewImage;
@@ -27,5 +27,5 @@ public class CaseData : ScriptableObject
     public string newsLinkText;
 
     [Header("Correct Clue Items")]
-    public CorrectItem[] correctItems; // exactly 3, each tied to one collectible in this case's scene
+    public CorrectItem[] correctItems; // 3 correct items tied to collectibles in this case's scene
 }

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Speeding_Data
   m_EditorClassIdentifier: Assembly-CSharp::CauseOption
   causeID: Speeding
-  displayLabel: Speeding
+  revealIcon: {fileID: 21300000, guid: b7b93d1fa7e571e4dba4ec1601b2fa24, type: 3}

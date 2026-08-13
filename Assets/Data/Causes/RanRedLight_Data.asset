@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: RanRedLight_Data
   m_EditorClassIdentifier: Assembly-CSharp::CauseOption
   causeID: RanRedLight
-  displayLabel: RanRedLight
+  revealIcon: {fileID: 21300000, guid: ec5655d0ac5bfda4daee57fff3c6ec2d, type: 3}

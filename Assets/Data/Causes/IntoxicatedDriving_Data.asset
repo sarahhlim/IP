@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: IntoxicatedDriving_Data
   m_EditorClassIdentifier: Assembly-CSharp::CauseOption
   causeID: IntoxicatedDriving
-  displayLabel: IntoxicatedDriving
+  revealIcon: {fileID: 21300000, guid: c9a7131c33d0a414f9b770ba04e74a7d, type: 3}

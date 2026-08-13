@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: RashAct_Data
   m_EditorClassIdentifier: Assembly-CSharp::CauseOption
   causeID: RashAct
-  displayLabel: RashAct
+  revealIcon: {fileID: 21300000, guid: 055c4900f5a95fc4e92c8aa6f2d5ad50, type: 3}
