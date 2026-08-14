@@ -9,6 +9,8 @@ public class CaseHUDController : MonoBehaviour
 {
     public static CaseHUDController Instance; // scene-local singleton so SpiritInteraction can call into this without a manual reference
 
+    public static bool CluesUnlocked { get; private set; } // true only after the player has talked to the spirit; ClueItem checks this before allowing a pickup
+
     [Header("Case Data")] // single source of truth for this case's objective text and timing
     [SerializeField] private CaseData caseData; // same asset assigned to ClueTracker and CaseTimer for this scene
 
@@ -17,6 +19,7 @@ public class CaseHUDController : MonoBehaviour
     private void Awake()
     {
         Instance = this; // assign singleton reference for this scene, no DontDestroyOnLoad since each case scene has its own controller
+        CluesUnlocked = false; // reset every time this scene (re)loads, clues are always locked until the spirit is talked to again
     }
 
     private void OnEnable() // subscribe to tracker/timer events while this controller is active
@@ -42,6 +45,7 @@ public class CaseHUDController : MonoBehaviour
 
     public void TriggerSpiritDialogue() // called by SpiritInteraction once the player presses E near the spirit
     {
+        CluesUnlocked = true; // clues are only collectible from this point on
         GameConsoleHUD.Instance?.PrintLine(caseData.objectiveFlavorText); // e.g. "WHAT? THAT'S IT? HOW DID THIS HAPPEN?"
         GameConsoleHUD.Instance?.SetObjectiveStatus("Find clues around the map [0/" + caseData.correctItems.Length + "]"); // pin the live clue counter
         CaseTimer.Instance?.StartTimer(); // the clue-finding phase starts counting down now, not at scene load
