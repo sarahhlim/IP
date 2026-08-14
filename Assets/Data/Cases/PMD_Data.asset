@@ -25,3 +25,8 @@ MonoBehaviour:
     icon: {fileID: 21300000, guid: 8878c3de7bde93145b58e340d763f973, type: 3}
   - itemID: medicineID
     icon: {fileID: 21300000, guid: e17ab652133d7a14f9057cbf1fc66c4d, type: 3}
+  objectiveTitle: Talk to the Spirit
+  objectiveFlavorText: WHAT? THAT'S IT? HOW DID THIS HAPPEN?
+  nextObjectiveTitle: 
+  nextObjectiveFlavorText: 
+  timeLimitSeconds: 60

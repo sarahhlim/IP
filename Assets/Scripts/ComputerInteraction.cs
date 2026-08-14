@@ -39,6 +39,7 @@ public class ComputerInteraction : MonoBehaviour
         if (computerVCam != null) computerVCam.Priority = 20;
         if (computerCanvas != null) computerCanvas.SetActive(true);
         if (playerMovementScript != null) playerMovementScript.enabled = false;
+        GameConsoleHUD.Instance?.PrintInteractDesc("Accessing the computer..."); // prints to the bottom console panel
         ComputerScreenManager.instance.OpenDefaultScreen(); // decides MainMenu vs CauseSelection based on in-progress state
 
         Cursor.lockState = CursorLockMode.None;

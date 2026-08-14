@@ -28,4 +28,13 @@ public class CaseData : ScriptableObject
 
     [Header("Correct Clue Items")]
     public CorrectItem[] correctItems; // 3 correct items tied to collectibles in this case's scene
+
+    [Header("HUD Objective Text")]
+    public string objectiveTitle; // shown when the case scene loads, e.g. "Talk to the spirit"
+    public string objectiveFlavorText; // reaction line shown under the objective title
+    public string nextObjectiveTitle; // shown if the timer runs out before all clues are collected
+    public string nextObjectiveFlavorText; // reaction line shown under the fallback objective
+
+    [Header("HUD Timing")]
+    public float timeLimitSeconds = 60f; // countdown length for this case, runs in the background, no on-screen display
 }

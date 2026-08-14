@@ -45,6 +45,7 @@ public class ItemPickup : MonoBehaviour
         }
 
         ItemCollectorManager.Instance?.ItemCollected(itemName, isRequiredItem);
+        GameConsoleHUD.Instance?.PrintInteractDesc("Picked up " + itemName + "."); // prints to the bottom console panel
 
         gameObject.SetActive(false);
     }

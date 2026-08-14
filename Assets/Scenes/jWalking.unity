@@ -8972,6 +8972,65 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4759262865471542, guid: 6825a3fe8a1605f42a0d0589e582ac40, type: 3}
   m_PrefabInstance: {fileID: 541472245}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &543122464
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 543122467}
+  - component: {fileID: 543122466}
+  - component: {fileID: 543122465}
+  m_Layer: 0
+  m_Name: CaseSystems
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &543122465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 543122464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d53a28f58584524eb0946aaa87035e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CaseTimer
+  caseData: {fileID: 11400000, guid: 05489e7f7a9a4584d906037980c56fa4, type: 2}
+--- !u!114 &543122466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 543122464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acbcd322032c02a4fb0a51b73e20b4ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ClueTracker
+  caseData: {fileID: 11400000, guid: 05489e7f7a9a4584d906037980c56fa4, type: 2}
+--- !u!4 &543122467
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 543122464}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &548377772
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31188,3 +31247,4 @@ SceneRoots:
   - {fileID: 1231509742}
   - {fileID: 1669305477}
   - {fileID: 353774456}
+  - {fileID: 543122467}
